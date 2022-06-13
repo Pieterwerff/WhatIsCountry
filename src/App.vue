@@ -19,18 +19,6 @@
           <!-- Eerst update hij het getal wat binnenin de Pie chart staat. Ik moet vervolgens nog een keer klikken om ook de Pie Chart te updaten -->
           {{ country.world_share.toFixed(3) }}%
         </div>
-        <div>
-          <iframe
-            id="iFrameYoutube"
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/lpQN32dXt10"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
       </form>
     </ul>
   </div>
