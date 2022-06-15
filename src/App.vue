@@ -372,6 +372,8 @@ export default {
   },
   methods: {
     submit() {
+      this.country = {};
+      this.weather = {};
       this.fetchCountryData(`${this.search}`);
       this.fetchCountryWeather(`${this.search}`);
     },
