@@ -334,7 +334,6 @@
           </select>
           <button
             type="submit"
-            @click="percentagePie = country.world_share.toFixed(2)"
             class="search--button"
           >
             Search
@@ -395,6 +394,10 @@ export default {
         .then((response) => {
           console.log(response);
           this.country = response.data.body;
+          // VAN TOM: Volgens mij kun je hier je percentagePie gewoon updaten met de data die je binnenkrijgt.
+          // Omdat je percentagePie in je data hebt staan op regel 366 kun je hem hier updaten
+          // en je template laat meteen de waarde zien als er wat veranderd.
+          this.percentagePie = response.data.body.world_share.toFixed(2);
         })
         .catch(function (error) {
           if (error.response) {
