@@ -4,19 +4,8 @@
       <img id="logo" src="src/assets/logo.png" alt="" />
       <h1 v-if="country.world_share"></h1>
       <h1 v-else>Choose a country!</h1>
-      <!--       
-      <form @submit.prevent="submit">
-        <div>
-          <input class="search" type="text" v-model="search" />
-          <button
-            type="submit"
-            @click="percentagePie = country.world_share.toFixed(2)"
-            class="search--button"
-          >
-            Search
-          </button>
-        </div>
-      </form> -->
+      <!-- Hier wil ik alleen de error laten zien. Puur om te bewijzen dat de message kan ophalen, lukt dus niet -->
+      <h1>{{ error }}</h1>
 
       <!-- Selector -->
       <div id="selector">
@@ -373,7 +362,7 @@ export default {
       weather: {},
       search: "",
       percentagePie: "0",
-      error: {},
+      error: "",
     };
   },
   created() {
@@ -381,7 +370,7 @@ export default {
   },
   methods: {
     submit() {
-      this.error = "";
+      this.error = {};
       this.country = {};
       this.weather = {};
       this.fetchCountryData(`${this.search}`);
@@ -408,19 +397,19 @@ export default {
           // VAN TOM: Volgens mij kun je hier je percentagePie gewoon updaten met de data die je binnenkrijgt.
           // Omdat je percentagePie in je data hebt staan op regel 366 kun je hem hier updaten
           // en je template laat meteen de waarde zien als er wat veranderd.
-          this.percentagePie = response.data.body.world_share.toFixed(2);
+          this.percentagePie = response.data.body.world_share.toFixed(7);
         })
         .catch(function (error) {
           if (error.response) {
+            console.log(error);
             // Request made and server responded
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
+            // Als ik console.log(error.response.data.message); doe zoals hieronder. Krijg je precies het bericht wat ik wil zien op het scherm maar dan in de log....
             console.log(error.response.data.message);
-            country = {};
-            // Mee bezig, nogsteeds proberen te fixen dat er een error komt na login
-            country = error.response.data.message;
-            console.log(country);
+            // Mee bezig, nogsteeds proberen te fixen dat er een error komt na verkeerde landkeuze... Heb eindeloos veel mogelijkheden geprobeerd...
+            error = error.response.data.message;
           } else if (error.request) {
             // The request was made but no response was received
             console.log(error.request);
