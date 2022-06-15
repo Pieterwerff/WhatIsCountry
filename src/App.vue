@@ -8,7 +8,7 @@
       <!-- <p v-if="error.message">
         Oh no, something is wrong 😢, {{ error.message }}
       </p> -->
-      <!-- 
+      <!--       
       <form @submit.prevent="submit">
         <div>
           <input class="search" type="text" v-model="search" />
@@ -332,12 +332,7 @@
             <option value="Zambia">Zambia</option>
             <option value="Zimbabwe">Zimbabwe</option>
           </select>
-          <button
-            type="submit"
-            class="search--button"
-          >
-            Search
-          </button>
+          <button type="submit" class="search--button">Search</button>
         </form>
       </div>
       <div id="pie" v-if="country.world_share">
