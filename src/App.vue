@@ -1,13 +1,9 @@
 <template>
   <div>
     <ul>
-      <!-- <p>{{ error.message }}</p> -->
-      <p>{{ country.population }}</p>
-      <p v-if="country.world_share">{{ country.world_share.toFixed(2) }}</p>
-      <p v-else>Type a country name!</p>
-      <!-- <p v-if="error.message">
-        Oh no, something is wrong 😢, {{ error.message }}
-      </p> -->
+      <img id="logo" src="src/assets/logo.png" alt="" />
+      <h1 v-if="country.world_share"></h1>
+      <h1 v-else>Choose a country!</h1>
       <!--       
       <form @submit.prevent="submit">
         <div>
@@ -21,10 +17,11 @@
           </button>
         </div>
       </form> -->
+
+      <!-- Selector -->
       <div id="selector">
         <form @submit.prevent="submit">
           <select v-model="search" id="countrySelector" name="country">
-            <option>country</option>
             <option value="Afghanistan">Afghanistan</option>
             <option value="Aland Islands">Aland Islands</option>
             <option value="Albania">Albania</option>
@@ -335,17 +332,34 @@
           <button type="submit" class="search--button">Search</button>
         </form>
       </div>
-      <div id="pie" v-if="country.world_share">
-        <!-- Eerst update hij het getal wat binnenin de Pie chart staat. Ik moet vervolgens nog een keer klikken om ook de Pie Chart te updaten -->
-        {{ country.world_share.toFixed(2) }}%
-      </div>
       <div v-if="country.world_share">
-        The capital of {{ weather.location.country }} is
-        {{ weather.location.name }}
+        <H2
+          >The population of {{ country.country_name }} is <br />
+          {{ country.population }}, <br />
+          which is
+        </H2>
+      </div>
+
+      <div id="pie" v-if="country.world_share">
+        {{ country.world_share.toFixed(5) }}%
+      </div>
+      <div v-if="country.world_share"><H2>Of the world's population!</H2></div>
+      <div class="item" v-if="country.world_share">
+        <p>
+          The capital of {{ weather.location.country }} is
+          {{ weather.location.name }}
+        </p>
         <p v-if="weather.current.temp_c">
-          Currently the teperature in {{ weather.location.name }} is
+          Currently the temperature in {{ weather.location.name }} is
+
           {{ weather.current.temp_c }} °C
         </p>
+        The weather is {{ weather.current.condition.text }}
+        <img
+          :src="weather.current.condition.icon"
+          style="width: 10%; margin: auto; display: block"
+          alt=""
+        />
       </div>
     </ul>
   </div>
@@ -367,6 +381,7 @@ export default {
   },
   methods: {
     submit() {
+      this.error = "";
       this.country = {};
       this.weather = {};
       this.fetchCountryData(`${this.search}`);
@@ -385,7 +400,6 @@ export default {
             "f9c5cf06a3msh7a64081be520eb8p1895d5jsnf31287ba1e80",
         },
       };
-
       axios
         .request(options)
         .then((response) => {
@@ -404,6 +418,9 @@ export default {
             console.log(error.response.headers);
             console.log(error.response.data.message);
             country = {};
+            // Mee bezig, nogsteeds proberen te fixen dat er een error komt na login
+            country = error.response.data.message;
+            console.log(country);
           } else if (error.request) {
             // The request was made but no response was received
             console.log(error.request);
@@ -413,7 +430,7 @@ export default {
             console.log("Error", error.message);
             country = {};
           }
-          this.error = error.response.data;
+          error = error.response.data.message;
         });
     },
     fetchCountryWeather(weatherRequest) {
@@ -536,15 +553,16 @@ button {
 /* Pie chart voor percentage mensen */
 #pie {
   --p: v-bind(percentagePie);
-  --b: 10px;
+  --b: 4px;
   --c: darkred;
-  --w: 150px;
+  --w: 200px;
 
   width: var(--w);
   aspect-ratio: 1;
   position: relative;
   display: inline-grid;
-  margin: 5px;
+  margin: 30px;
+  padding-top: 20px;
   place-content: center;
   font-size: 25px;
   font-weight: bold;
@@ -557,15 +575,17 @@ button {
   border-radius: 50%;
 }
 #pie:before {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
   inset: 0;
   background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b)
       var(--b) no-repeat,
     conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0);
-  -webkit-mask: radial-gradient(
+  /* -webkit-mask: radial-gradient(
     farthest-side,
     #0000 calc(99% - var(--b)),
     #000 calc(100% - var(--b))
-  );
+  ); */
   mask: radial-gradient(
     farthest-side,
     #0000 calc(99% - var(--b)),
@@ -594,5 +614,11 @@ button {
   too {
     --p: 100;
   }
+}
+#logo {
+  width: 30%;
+}
+p {
+  margin: 20px;
 }
 </style>
