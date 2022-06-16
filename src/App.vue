@@ -1,6 +1,9 @@
 <template>
+  <!-- Startpagina -->
   <div v-if="newInstance == true">
+    <!-- logo -->
     <img id="logo" src="src/assets/logo.png" alt="" />
+    <!-- Introductie bericht -->
     <p>
       Hey there! This website is made for people with an interest in geopraphy.
       I wanted to make a really simple and easy to use website where people can
@@ -9,15 +12,18 @@
     <p>
       If you think you know your countries, feel free to test your knowledge! :)
     </p>
+    <!-- Knop naar de app -->
     <button style="margin: 10px" @click="newInstance = false">
       Let me explore!
     </button>
   </div>
+  <!-- app start als de knop let me explore world ingedrukt -->
   <div v-else>
+    <!-- logo en kies een land -->
     <img id="logo" src="src/assets/logo.png" alt="" />
     <h1 v-if="country.world_share"></h1>
     <h1 v-else>Choose a country!</h1>
-    <!-- Selector -->
+    <!-- Selector voor alle landen -->
     <div id="selector">
       <form @submit.prevent="submit">
         <select v-model="search" id="countrySelector" name="country">
@@ -332,36 +338,48 @@
         </button>
         <button
           style="margin: 10px; background-color: darkred"
-          @click="(testKnowledge = true), (guessedOne = false)"
+          @click="
+            (testKnowledge = true),
+              (guessedOne = false),
+              (probablyCheated = false)
+          "
         >
           Test knowledge!
         </button>
       </form>
     </div>
-    <!-- HIER MEE BEZIG -->
+    <!-- als er geen land geselecteerd NA het zoeken, zal hij een foutmelding geven. Ik wilde dit eigenlijk doen door het error object op te halen uit de IPA maar dat is niet gelukt -->
     <div v-if="searched == true">
       <p v-if="country.world_share"></p>
       <p v-else>
         No country has been selected, or the country has not been found!
       </p>
     </div>
-
+    <!-- De app doet een kleine quizz met de informatie die hij uit de 2 IPA's haalt -->
     <div v-if="testKnowledge == true">
       <div v-if="country.world_share">
-        <H2
-          >What do you think the total population of
-          {{ country.country_name }} is?</H2
-        >
+        <h2>
+          What do you think the total population of
+          {{ country.country_name }} is?
+        </h2>
         <br />
+        <!-- Als de vraag onbeantwoord is, zal hij dit scherm laten zien om mensen te laten gokken -->
         <div v-if="guessedOne == false">
           <input v-model="populationGuess" @keypress="isNumber($event)" />
           <button @click="calculateAnswer(populationGuess, country.population)">
             Take Guess!
           </button>
         </div>
+        <!-- Als de vraag wordt beantwoord laat hij dit zien -->
         <div v-if="guessedOne == true">
-          Nice! You're only {{ amountOff }} off! The exact amount is
-          {{ country.population }}, which is
+          <h2 v-if="probablyCheated == true">
+            Nice, you guessed the exact population size! You probably cheated,
+            didn't you ;) Your guess is:
+          </h2>
+          <h2 v-else>
+            You're only {{ amountOff }} off! The exact amount is
+            {{ country.population }}, which is
+          </h2>
           <div id="pie" v-if="country.world_share">
             {{ country.world_share.toFixed(5) }}%
           </div>
@@ -370,11 +388,25 @@
           </div>
         </div>
       </div>
-      <div v-if="guessedTwo == false">
+      <!-- ***** -->
+      <!-- Hier wil ik nog een tweede vraag maken. namelijk, Wat is de hoofdstad van het gekozen land? Tot op heden heeft dit nog niet gewerkt helaas, daarom haal ik het uit de code -->
+      <!-- ***** -->
+      <!--  -->
+      <!-- <div v-if="showSecond == true">
         <p>
           Next up, capital! What do you think is the capital of
           {{ weather.location.country }}?
-          <!-- {{ weather.location.name }} -->
+          <input v-model="countryGuess" />
+          <button @click="nameGuessAnswer(countryGuess, weather.location.name)">
+            Take Guess!
+          </button>
+        </p>
+        <p v-if="rightAnswer == true">
+          Well done! You got the correct answer: {{ weather.location.name }}
+        </p>
+        <p v-if="wrongAnswer == true">
+          Sorry, that is not the correct answer! The right answer is:
+          {{ weather.location.name }}
         </p>
         <p v-if="weather.current.temp_c">
           Currently the temperature in {{ weather.location.name }} is
@@ -391,23 +423,25 @@
         </p>
         <p>The current date and time in {{ weather.location.name }} are:</p>
         <h2>{{ weather.location.localtime }}</h2>
-      </div>
+      </div>  -->
     </div>
-
+    <!-- De app Laat de informatie zien over een land -->
     <div v-if="testKnowledge == false">
+      <!-- Als hij informatie heeft gekregen uit de IPA zal hij deze laten zien -->
       <div v-if="country.world_share">
-        <H2
+        <h2>
           >The population of {{ country.country_name }} is <br />
           {{ country.population }}, <br />
           which is
-        </H2>
+        </h2>
       </div>
-
+      <!-- Hiermee heb ik een pie chart die het percentage laat zien in vergelijking tot de wereldbevolking -->
       <div id="pie" v-if="country.world_share">
         {{ country.world_share.toFixed(5) }}%
       </div>
       <div v-if="country.world_share"><H2>Of the world's population!</H2></div>
-      <div class="item" v-if="country.world_share">
+      <div v-if="country.world_share">
+        <!-- Met de tweede IPA heb ik de hoofdstad, temperatuur, icoontje hiervan en datum en tijd opgehaald en laat ik hier zien-->
         <p>
           The capital of {{ weather.location.country }} is
           {{ weather.location.name }}
@@ -436,6 +470,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      // Alle default staten van de variabelen
       country: {},
       weather: {},
       search: "",
@@ -444,25 +479,50 @@ export default {
       newInstance: true,
       testKnowledge: false,
       guessedOne: false,
-      guessedTwo: true,
+      probablyCheated: false,
+      // showSecond: false,
+      // guessedTwo: true,
       amountOff: 0,
+      // rightAnswer: false,
+      // wrongAnswer: false,
     };
   },
   created() {
     // this.submit();
   },
   methods: {
+    // Hiermee maakt hij de objecten leeg en vult hij ze met de nieuwe landen
     submit() {
       this.country = {};
       this.weather = {};
       this.fetchCountryData(`${this.search}`);
       this.fetchCountryWeather(`${this.search}`);
     },
+    // Rekent het antwoord uit op de eerste kennisvraag
     calculateAnswer(guess, totalPopulation) {
-      this.amountOff = guess - -totalPopulation;
+      if (guess == totalPopulation) {
+        this.probablyCheated = true;
+      }
+      this.amountOff = (guess - totalPopulation) * -1;
       this.guessedOne = true;
-      this.guessedTwo - false;
+      this.guessedTwo = false;
+      this.showSecond = true;
     },
+    // ****
+    // Deze functie is bedoeld voor de tweede vraag, omdat ik deze niet af heb kunnen maken haal ik ze uit de actieve code
+    // ****
+    // nameGuessAnswer(guess, name) {
+    //   if (guess.toLowerCase.trim() == name.toLowerCase.trim()) {
+    //     this.rightAnswer = true;
+    //     console.log(guess);
+    //   } else {
+    //     this.wrongAnswer = true;
+    //     console.log(name);
+    //   }
+    //   this.guessedTwo = true;
+    // },
+
+    // Voor de eerste quizvraag is het belangrijk dat er geen letters getypt worden in de textbox, dat doe ik met deze funcite
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
@@ -476,7 +536,7 @@ export default {
         return true;
       }
     },
-    // Aantal mensen ophalen
+    // Aantal mensen van land ophalen
     fetchCountryData(country = "") {
       this.error = this.post = null;
       this.loading = true;
@@ -498,7 +558,6 @@ export default {
           // Omdat je percentagePie in je data hebt staan op regel 366 kun je hem hier updaten
           // en je template laat meteen de waarde zien als er wat veranderd.
           this.percentagePie = response.data.body.world_share.toFixed(7);
-          this.searched = true;
         })
         .catch(function (error) {
           if (error.response) {
@@ -516,7 +575,9 @@ export default {
             console.log("Error", error.message);
           }
         });
+      this.searched = true;
     },
+    // De hoofdstad en het weer ophalen
     fetchCountryWeather(weatherRequest) {
       this.error = this.post = null;
       this.loading = true;
@@ -557,6 +618,7 @@ export default {
 };
 </script>
 <style>
+/* Basis stijl voor de app zelf */
 #app {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -591,7 +653,7 @@ body {
   color: #fff;
 } */
 
-/*the container must be positioned relative:*/
+/* voor de input en zoekbalk */
 #searchbar,
 p,
 h2,
@@ -605,7 +667,7 @@ button {
   position: relative;
   display: inline-block;
 }
-
+/* opmaak voor quiz tekstbalk */
 input {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border: 1px solid transparent;
@@ -624,6 +686,7 @@ input {
   font-size: 16px;
   /* justify-content: center; */
 }
+/* knop opmaak */
 button {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border: 1px solid transparent;
@@ -698,9 +761,11 @@ button {
     --p: 100;
   }
 }
+/* logo */
 #logo {
   width: 30%;
 }
+/* elke paragraaf neemt 20px margin, dan ziet het er mooier uit */
 p {
   margin: 20px;
 }
