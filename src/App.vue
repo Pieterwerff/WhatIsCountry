@@ -1,6 +1,7 @@
 <template>
   <!-- Startpagina -->
   <div v-if="newInstance == true">
+    <h1>WhatIsCountry</h1>
     <!-- logo -->
     <img id="logo" src="src/assets/logo.png" alt="WhatIsCountryLogo" />
     <!-- Introductie bericht -->
@@ -19,6 +20,7 @@
   </div>
   <!-- app start als de knop let me explore world ingedrukt -->
   <div v-else>
+    <h1>WhatIsCountry</h1>
     <!-- logo en kies een land -->
     <img id="logo" src="src/assets/logo.png" alt="WhatIsCountryLogo" />
     <h1 v-if="country.world_share"></h1>
@@ -668,7 +670,6 @@ button {
 /* opmaak voor quiz tekstbalk */
 input {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border: 1px solid transparent;
   background-color: #f1f1f1;
   padding: 10px;
   font-size: 16px;
@@ -678,7 +679,6 @@ input {
   margin: 15px;
   margin-right: 0px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border: 1px solid transparent;
   background-color: #f1f1f1;
   padding: 10px;
   font-size: 16px;
