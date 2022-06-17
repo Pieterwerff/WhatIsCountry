@@ -2,7 +2,7 @@
   <!-- Startpagina -->
   <div v-if="newInstance == true">
     <!-- logo -->
-    <img id="logo" src="src/assets/logo.png" alt="" />
+    <img id="logo" src="src/assets/logo.png" alt="WhatIsCountryLogo" />
     <!-- Introductie bericht -->
     <p>
       Hey there! This website is made for people with an interest in geopraphy.
@@ -20,7 +20,7 @@
   <!-- app start als de knop let me explore world ingedrukt -->
   <div v-else>
     <!-- logo en kies een land -->
-    <img id="logo" src="src/assets/logo.png" alt="" />
+    <img id="logo" src="src/assets/logo.png" alt="WhatIsCountryLogo" />
     <h1 v-if="country.world_share"></h1>
     <h1 v-else>Choose a country!</h1>
     <!-- Selector voor alle landen -->
@@ -350,10 +350,7 @@
     </div>
     <!-- als er geen land geselecteerd NA het zoeken, zal hij een foutmelding geven. Ik wilde dit eigenlijk doen door het error object op te halen uit de IPA maar dat is niet gelukt -->
     <div v-if="searched == true">
-      <p v-if="country.world_share"></p>
-      <p v-else>
-        No country has been selected, or the country has not been found!
-      </p>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
     </div>
     <!-- De app doet een kleine quizz met de informatie die hij uit de 2 IPA's haalt -->
     <div v-if="testKnowledge == true">
@@ -380,12 +377,10 @@
             You're only {{ amountOff }} off! The exact amount is
             {{ country.population }}, which is
           </h2>
-          <div id="pie" v-if="country.world_share">
+          <span id="pie" v-if="country.world_share">
             {{ country.world_share.toFixed(5) }}%
-          </div>
-          <div v-if="country.world_share">
-            <H2>Of the world's population!</H2>
-          </div>
+          </span>
+          <h2 v-if="country.world_share">Of the world's population!</h2>
         </div>
       </div>
       <!-- ***** -->
@@ -439,7 +434,7 @@
       <div id="pie" v-if="country.world_share">
         {{ country.world_share.toFixed(5) }}%
       </div>
-      <div v-if="country.world_share"><H2>Of the world's population!</H2></div>
+      <div v-if="country.world_share"><h2>Of the world's population!</h2></div>
       <div v-if="country.world_share">
         <!-- Met de tweede IPA heb ik de hoofdstad, temperatuur, icoontje hiervan en datum en tijd opgehaald en laat ik hier zien-->
         <p>
@@ -473,6 +468,7 @@ export default {
       // Alle default staten van de variabelen
       country: {},
       weather: {},
+      errorMessage: "",
       search: "",
       percentagePie: "0",
       searched: false,
@@ -553,6 +549,7 @@ export default {
         .request(options)
         .then((response) => {
           console.log(response);
+          this.errorMessage = "";
           this.country = response.data.body;
           // VAN TOM: Volgens mij kun je hier je percentagePie gewoon updaten met de data die je binnenkrijgt.
           // Omdat je percentagePie in je data hebt staan op regel 366 kun je hem hier updaten
@@ -562,6 +559,7 @@ export default {
         .catch((error) => {
           if (error.response) {
             console.log(error);
+            this.errorMessage = error.response.data.message;
             // Request made and server responded
             console.log(error.response.data);
             console.log(error.response.status);
