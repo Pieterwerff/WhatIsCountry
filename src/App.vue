@@ -559,7 +559,7 @@ export default {
           // en je template laat meteen de waarde zien als er wat veranderd.
           this.percentagePie = response.data.body.world_share.toFixed(7);
         })
-        .catch(function (error) {
+        .catch((error) => {
           if (error.response) {
             console.log(error);
             // Request made and server responded
@@ -598,7 +598,7 @@ export default {
           console.log(response);
           this.weather = response.data;
         })
-        .catch(function (error) {
+        .catch((error) => {
           if (error.response) {
             // Request made and server responded
             console.log(error.response.data);
