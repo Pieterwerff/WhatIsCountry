@@ -427,7 +427,7 @@
       <!-- Als hij informatie heeft gekregen uit de IPA zal hij deze laten zien -->
       <div v-if="country.world_share">
         <h2>
-          >The population of {{ country.country_name }} is <br />
+          The population of {{ country.country_name }} is <br />
           {{ country.population }}, <br />
           which is
         </h2>
